@@ -227,10 +227,10 @@ replace (
 	github.com/improbable-eng/grpc-web => github.com/improbable-eng/grpc-web v0.0.0-20181111100011-16092bd1d58a
 
 	// Monorepo
-	github.com/redhat-appstudio/managed-gitops/appstudio-controller => ../appstudio-controller
-	github.com/redhat-appstudio/managed-gitops/backend => ../backend
-	github.com/redhat-appstudio/managed-gitops/backend-shared => ../backend-shared
-	github.com/redhat-appstudio/managed-gitops/cluster-agent => ../cluster-agent
+	// github.com/redhat-appstudio/managed-gitops/appstudio-controller => ../appstudio-controller
+	// github.com/redhat-appstudio/managed-gitops/backend => ../backend
+	// github.com/redhat-appstudio/managed-gitops/backend-shared => ../backend-shared
+	// github.com/redhat-appstudio/managed-gitops/cluster-agent => ../cluster-agent
 
 	// Avoid CVE-2022-28948
 	gopkg.in/yaml.v3 => gopkg.in/yaml.v3 v3.0.1
