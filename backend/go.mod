@@ -12,8 +12,8 @@ require (
 	github.com/onsi/ginkgo/v2 v2.1.6
 	github.com/onsi/gomega v1.20.1
 	github.com/prometheus/client_golang v1.12.1
-	github.com/redhat-appstudio/managed-gitops/backend-shared v0.0.0-20221123035345-087515c78044
-	github.com/redhat-appstudio/managed-gitops/utilities/db-migration v0.0.0-20221123035345-087515c78044
+	github.com/redhat-appstudio/managed-gitops/backend-shared v1.0.0-20221123035345-087515c78044
+	github.com/redhat-appstudio/managed-gitops/utilities/db-migration v1.0.0-20221123035345-087515c78044
 	github.com/stretchr/testify v1.7.1
 	go.uber.org/zap v1.19.1
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
