@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/golang-migrate/migrate/v4 v4.15.2
-	github.com/redhat-appstudio/managed-gitops/backend-shared v0.0.0
+	github.com/redhat-appstudio/managed-gitops/backend-shared v0.0.0-20221213192646-02c27cd35f34
 )
 
 require (
