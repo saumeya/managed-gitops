@@ -53,7 +53,7 @@ test: fmt vet envtest ## Run tests.
 
 ##@ Build
 
-build: generate fmt vet ## Build manager binary.
+build: #build
 	go build -o bin/manager main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
