@@ -1,0 +1,31 @@
+name: Update-Deps
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - update-deps-action
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    name: Update dependency
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2      
+      - name: updating backend shared
+        run: |
+        cd backend && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+        git add && git commit -m "update backend" && git push origin update-deps-action
+      #   cd .. && cd appstudio-controller && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+      # - name: push to branch
+      #   with:
+      #     token: ${{secrets.PAT}}
+      #   run: git push 
+      # - name: Get latest commit id
+      #   run: git log -n 1
+      # - name: update db-migrate
+      #   run: cd backend && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+      # - name: push to branch
+      #   with:
+      #     token: ${{secrets.PAT}}
+      #   run: git push   
