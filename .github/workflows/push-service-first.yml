@@ -14,9 +14,10 @@ jobs:
         uses: actions/checkout@v2      
       - name: updating backend shared
         run: |
-          cd backend && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
+          cd backend && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+          go get -u go.uber.org/zap
           git add . && git commit -m "update backend" && git push origin update-deps-action
       #   cd .. && cd appstudio-controller && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
       # - name: push to branch
