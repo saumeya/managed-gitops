@@ -16,3 +16,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: updating backend shared
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"          
+          go get -u go.uber.org/zap
+          git add . && git commit -m "update backend" && git push origin update-deps-action    
