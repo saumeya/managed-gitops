@@ -25,8 +25,8 @@ jobs:
       #   with:
       #     token: ${{secrets.PAT}}
       #   run: git push 
-      # - name: Get latest commit id
-      #   run: git log -n 1
+      - name: Get latest commit id
+        run: git log -n 1 --pretty=format:"%h" | tail -n 1
       # - name: update db-migrate
       #   run: cd backend && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
       # - name: push to branch
