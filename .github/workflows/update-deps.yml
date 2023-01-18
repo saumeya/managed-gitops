@@ -21,5 +21,5 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           cd backend
-          go get -u go.uber.org/zap
-          git add . && git commit -m "update backend" && git push origin update-deps-action    
+          mkdir abc
+          git add . && git commit -m "update backend" && git push origin update-deps-action
