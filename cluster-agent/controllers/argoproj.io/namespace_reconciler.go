@@ -11,6 +11,7 @@ import (
 
 	appv1 "github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"github.com/go-logr/logr"
+	"github.com/prometheus/common/log"
 	"github.com/redhat-appstudio/managed-gitops/backend-shared/apis/managed-gitops/v1alpha1"
 	"github.com/redhat-appstudio/managed-gitops/backend-shared/config/db"
 	cache "github.com/redhat-appstudio/managed-gitops/backend-shared/config/db/util"
@@ -68,7 +69,7 @@ func runNamespaceReconcile(ctx context.Context, dbQueries db.DatabaseQueries, cl
 	argoApplications := argoApplicationList.Items
 
 	offSet := 0
-
+	log.Info("just a print")
 	// Delete operation resources created during previous run.
 	cleanK8sOperations(ctx, dbQueries, client, log)
 
