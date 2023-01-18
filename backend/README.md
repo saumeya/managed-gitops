@@ -1,5 +1,5 @@
 
-# Managed GitOps Backend
+# Managed GitOps Backend test
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/redhat-appstudio/managed-gitops/backend)](https://goreportcard.com/report/github.com/redhat-appstudio/managed-gitops/backend)
 [![GoDoc](https://godoc.org/github.com/redhat-appstudio/managed-gitops/backend?status.svg)](https://pkg.go.dev/mod/github.com/redhat-appstudio/managed-gitops/backend)
