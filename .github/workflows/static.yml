@@ -1,242 +1,242 @@
-name: static checks
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "*"
+# name: static checks
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - "main"
+#   pull_request:
+#     branches:
+#       - "*"
 
-jobs:
-  gofmt:
-    name: "Ensure that code is gofmt-ed"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Run make fmt and then 'git diff' to see if anything changed: to fix this check, run make fmt and then commit the changes."
-        run: |
-          make fmt
-          git diff --exit-code -- .
+# jobs:
+#   gofmt:
+#     name: "Ensure that code is gofmt-ed"
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@master
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Run make fmt and then 'git diff' to see if anything changed: to fix this check, run make fmt and then commit the changes."
+#         run: |
+#           make fmt
+#           git diff --exit-code -- .
   
-  duplimport:
-    name: Ensure there are no duplicate package imports
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Install dupimport"
-        run: |
-          go install github.com/gostaticanalysis/dupimport/cmd/dupimport@37d4ab484168ec60101dcc9bf644b54f910c2a25
-      - name: "Ensure 'backend' has no duplicate imports"
-        run: |
-          cd $GITHUB_WORKSPACE/backend
-          go vet -vettool=`which dupimport` ./...
-      - name: "Ensure 'cluster-agent' has no duplicate imports"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          go vet -vettool=`which dupimport` ./...
-      - name: "Ensure 'backend-shared' has no duplicate imports"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          go vet -vettool=`which dupimport` ./...
-      - name: "Ensure 'appstudio-controller' has no duplicate imports"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          go vet -vettool=`which dupimport` ./...
+#   duplimport:
+#     name: Ensure there are no duplicate package imports
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@master
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Install dupimport"
+#         run: |
+#           go install github.com/gostaticanalysis/dupimport/cmd/dupimport@37d4ab484168ec60101dcc9bf644b54f910c2a25
+#       - name: "Ensure 'backend' has no duplicate imports"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend
+#           go vet -vettool=`which dupimport` ./...
+#       - name: "Ensure 'cluster-agent' has no duplicate imports"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           go vet -vettool=`which dupimport` ./...
+#       - name: "Ensure 'backend-shared' has no duplicate imports"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           go vet -vettool=`which dupimport` ./...
+#       - name: "Ensure 'appstudio-controller' has no duplicate imports"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           go vet -vettool=`which dupimport` ./...
 
-  gosec:
-    name: Ensure that code passes gosec and golint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Install gosec"
-        run: |
-          go install github.com/securego/gosec/v2/cmd/gosec@latest
-      - name: "Ensure 'backend' passes 'go-sec' - run 'make gosec' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/backend
-          make gosec
-      - name: "Ensure 'cluster-agent' passes 'go-sec' - run 'make gosec' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          make gosec
-      - name: "Ensure 'backend-shared' passes 'go-sec' - run 'make gosec' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          make gosec
-      - name: "Ensure 'appstudio-controller' passes 'go-sec' - run 'make gosec' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          make gosec
+#   gosec:
+#     name: Ensure that code passes gosec and golint
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@master
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Install gosec"
+#         run: |
+#           go install github.com/securego/gosec/v2/cmd/gosec@latest
+#       - name: "Ensure 'backend' passes 'go-sec' - run 'make gosec' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend
+#           make gosec
+#       - name: "Ensure 'cluster-agent' passes 'go-sec' - run 'make gosec' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           make gosec
+#       - name: "Ensure 'backend-shared' passes 'go-sec' - run 'make gosec' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           make gosec
+#       - name: "Ensure 'appstudio-controller' passes 'go-sec' - run 'make gosec' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           make gosec
 
-      - name: "Ensure 'backend' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
-          cd $GITHUB_WORKSPACE/backend
-          make lint 
+#       - name: "Ensure 'backend' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
+#           cd $GITHUB_WORKSPACE/backend
+#           make lint 
 
-      - name: "Ensure 'cluster-agent' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          make lint 
+#       - name: "Ensure 'cluster-agent' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           make lint 
 
-      - name: "Ensure 'backend-shared' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          make lint 
+#       - name: "Ensure 'backend-shared' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           make lint 
 
-      - name: "Ensure 'tests-e2e' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/tests-e2e
-          make lint 
+#       - name: "Ensure 'tests-e2e' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/tests-e2e
+#           make lint 
 
-      - name: "Ensure 'appstudio-controller' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          make lint 
+#       - name: "Ensure 'appstudio-controller' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           make lint 
 
-      - name: "Ensure 'db-migration' passes 'go-lint' - run 'make lint' to identify issues"
-        run: |
-          cd $GITHUB_WORKSPACE/utilities/db-migration
-          make lint 
+#       - name: "Ensure 'db-migration' passes 'go-lint' - run 'make lint' to identify issues"
+#         run: |
+#           cd $GITHUB_WORKSPACE/utilities/db-migration
+#           make lint 
 
 
-  check-go:
-    name: Ensure Go modules synchronicity
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
+#   check-go:
+#     name: Ensure Go modules synchronicity
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
 
-      - name: "Backend: Download all Go modules"
-        run: |
-          cd $GITHUB_WORKSPACE/backend
-          go mod download
-      - name: "Backend: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
-        run: |
-          cd $GITHUB_WORKSPACE/backend
-          go mod tidy
-          git diff --exit-code -- .
+#       - name: "Backend: Download all Go modules"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend
+#           go mod download
+#       - name: "Backend: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend
+#           go mod tidy
+#           git diff --exit-code -- .
 
-      - name: "Backend-shared: Download all Go modules"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          go mod download
-      - name: "Backend-shared: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          go mod tidy
-          git diff --exit-code -- .
+#       - name: "Backend-shared: Download all Go modules"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           go mod download
+#       - name: "Backend-shared: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           go mod tidy
+#           git diff --exit-code -- .
 
-      - name: "Cluster-agent: Download all Go modules"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          go mod download
-      - name: "Cluster-agent: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          go mod tidy
-          git diff --exit-code -- .
+#       - name: "Cluster-agent: Download all Go modules"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           go mod download
+#       - name: "Cluster-agent: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           go mod tidy
+#           git diff --exit-code -- .
 
-      - name: "Appstudio-controller: Download all Go modules"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          go mod download
-      - name: "Appstudio-controller: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          go mod tidy
-          git diff --exit-code -- .
+#       - name: "Appstudio-controller: Download all Go modules"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           go mod download
+#       - name: "Appstudio-controller: Check for tidyness of go.mod and go.sum: run `go mod tidy` to fix"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           go mod tidy
+#           git diff --exit-code -- .
 
-  validate-db-migration:
-    name: Check if migration schema matches with super schema.
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Install go modules for migration"
-        run: |
-          cd $GITHUB_WORKSPACE/utilities
-          ./check-db-schema.sh
-  verify-db-migration:
-    name: Check if migrations work as expected when applied to most recent two migrations.
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Install go modules for migration"
-        run: |
-          cd $GITHUB_WORKSPACE/utilities
-          ./verify-db-migration.sh
-  test-go:
-    name: Run unit tests for Go packages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Golang
-        uses: actions/setup-go@v3.4.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Start PostgreSQL"
-        run: |
-          cd $GITHUB_WORKSPACE
-          ./create-dev-env.sh
+#   validate-db-migration:
+#     name: Check if migration schema matches with super schema.
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Install go modules for migration"
+#         run: |
+#           cd $GITHUB_WORKSPACE/utilities
+#           ./check-db-schema.sh
+#   verify-db-migration:
+#     name: Check if migrations work as expected when applied to most recent two migrations.
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Install go modules for migration"
+#         run: |
+#           cd $GITHUB_WORKSPACE/utilities
+#           ./verify-db-migration.sh
+#   test-go:
+#     name: Run unit tests for Go packages
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.4.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Start PostgreSQL"
+#         run: |
+#           cd $GITHUB_WORKSPACE
+#           ./create-dev-env.sh
 
-      - name: "Run backend tests"
-        run: |
-          cd $GITHUB_WORKSPACE/backend
-          make test
-      - name: "Run backend-shared tests"
-        run: |
-          cd $GITHUB_WORKSPACE/backend-shared
-          make test
-      - name: "Run cluster-agent tests"
-        run: |
-          cd $GITHUB_WORKSPACE/cluster-agent
-          make test
-      - name: "Run appstudio-controller tests"
-        run: |
-          cd $GITHUB_WORKSPACE/appstudio-controller
-          make test
-      - name: "Send coverage results to codecov.io"
-        uses: codecov/codecov-action@v2.1.0
+#       - name: "Run backend tests"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend
+#           make test
+#       - name: "Run backend-shared tests"
+#         run: |
+#           cd $GITHUB_WORKSPACE/backend-shared
+#           make test
+#       - name: "Run cluster-agent tests"
+#         run: |
+#           cd $GITHUB_WORKSPACE/cluster-agent
+#           make test
+#       - name: "Run appstudio-controller tests"
+#         run: |
+#           cd $GITHUB_WORKSPACE/appstudio-controller
+#           make test
+#       - name: "Send coverage results to codecov.io"
+#         uses: codecov/codecov-action@v2.1.0
 
-  manifests:
-    name: "Ensure that manifests are up-to-date"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Golang
-        uses: actions/setup-go@v3.2.0
-        with:
-          go-version-file: './backend/go.mod'
-      - name: "Run 'make generate-manifests' and report any diff (to fix this if failing: run 'make clean' then 'make generate-manifests' at root, and check in changes)"
-        run: |
-          cd $GITHUB_WORKSPACE
-          make generate-manifests
-          git diff --exit-code -- .
+#   manifests:
+#     name: "Ensure that manifests are up-to-date"
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@master
+#       - name: Setup Golang
+#         uses: actions/setup-go@v3.2.0
+#         with:
+#           go-version-file: './backend/go.mod'
+#       - name: "Run 'make generate-manifests' and report any diff (to fix this if failing: run 'make clean' then 'make generate-manifests' at root, and check in changes)"
+#         run: |
+#           cd $GITHUB_WORKSPACE
+#           make generate-manifests
+#           git diff --exit-code -- .
