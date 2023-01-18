@@ -1,0 +1,25 @@
+name: Update-Deps
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    name: Update dependency
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: updating backend shared
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          cd backend
+          mkdir abc
+          git add . && git commit -m "update backend" && git push origin update-deps-action
