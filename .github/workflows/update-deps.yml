@@ -21,8 +21,5 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           cd backend
-          ls
-          mkdir abc
-          ls
-          go install golang.org/x/tools/gopls@v0.6.4
+          go get golang.org/x/tools/gopls@v0.6.4
           git status
