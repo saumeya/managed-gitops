@@ -23,3 +23,6 @@ jobs:
           cd backend
           go get golang.org/x/tools/gopls@v0.6.4
           git status
+          git add .
+          git commit -m "Test"
+          git push origin develop
