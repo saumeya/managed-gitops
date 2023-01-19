@@ -1,0 +1,842 @@
+[
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/condition",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/controllers/managed-gitops",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/eventloop",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/eventloop/application_event_loop",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/eventloop/eventlooptypes",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/eventloop/shared_resource_loop",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend/metrics",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/config/db",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/config/db/util",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/hack",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/util",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/util/argocd",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/backend-shared/util/operations",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/controllers",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/controllers/argoproj.io",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/controllers/argoproj.io/application_info_cache",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/controllers/managed-gitops",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/controllers/managed-gitops/eventloop",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/cluster-agent/utils",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  },
+  {
+    "SuitePath": "/home/skatyal/managed-gitops/tests-e2e/core",
+    "SuiteDescription": "",
+    "SuiteLabels": null,
+    "SuiteSucceeded": false,
+    "SuiteHasProgrammaticFocus": false,
+    "SpecialSuiteFailureReasons": [
+      "Suite did not run because prior suites failed and --keep-going is not set"
+    ],
+    "PreRunStats": {
+      "TotalSpecs": 0,
+      "SpecsThatWillRun": 0
+    },
+    "StartTime": "0001-01-01T00:00:00Z",
+    "EndTime": "0001-01-01T00:00:00Z",
+    "RunTime": 0,
+    "SuiteConfig": {
+      "RandomSeed": 1674049666,
+      "RandomizeAllSpecs": false,
+      "FocusStrings": [
+        "GitOpsDeployment Status Tests"
+      ],
+      "SkipStrings": null,
+      "FocusFiles": null,
+      "SkipFiles": null,
+      "LabelFilter": "",
+      "FailOnPending": false,
+      "FailFast": false,
+      "FlakeAttempts": 0,
+      "DryRun": false,
+      "PollProgressAfter": 0,
+      "PollProgressInterval": 0,
+      "Timeout": 3587678163497,
+      "OutputInterceptorMode": "",
+      "SourceRoots": null,
+      "GracePeriod": 30000000000,
+      "ParallelProcess": 1,
+      "ParallelTotal": 1,
+      "ParallelHost": ""
+    },
+    "SpecReports": null
+  }
+]
