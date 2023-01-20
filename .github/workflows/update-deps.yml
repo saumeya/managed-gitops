@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 16
       - name: updating backend shared
         run: |
           git config user.name "GitHub Actions Bot"
@@ -24,15 +24,10 @@ jobs:
           cd ../appstudio-controller && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
           cd ../utilities/db-migration && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
           git status
-          # git add . && git commit -m "update backend-shared"
-          # git push origin develop
+          git add . && git commit -m "update backend-shared" && git push origin develop
       - name: update db-migration
         run: |
-          commit_id=$(git rev-parse HEAD)
-          echo $commit_id
-          pwd
-          cd ../../backend 
-          go get github.com/redhat-appstudio/managed-gitops/utilities/db-migration@$commit
-          git add . && git commit -m "update backend-shared"
-          git push origin develop
+          commit_id=$(git rev-parse HEAD)          
+          cd backend &&  go get github.com/redhat-appstudio/managed-gitops/utilities/db-migration@$commit
+          git add . && git commit -m "update db-migration" && git push origin develop
 
