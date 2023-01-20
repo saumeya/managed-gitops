@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - new-branch
+      - develop
 
 jobs:
   update-deps:
@@ -28,5 +28,11 @@ jobs:
           git push origin develop
       - name: update db-migration
         run: |
-          git rev-parse HEAD
+          commit_id=$(git rev-parse HEAD)
+          echo $commit_id
+          pwd
+          cd ../../backend 
+          go get github.com/redhat-appstudio/managed-gitops/utilities/db-migration@$commit
+          git add . && git commit -m "update backend-shared"
+          git push origin develop
 
