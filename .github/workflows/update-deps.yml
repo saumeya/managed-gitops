@@ -1,0 +1,28 @@
+name: Update Dependencies
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    name: Update dependency
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3      
+      - name: Action Bot
+        run: git config user.name "GitHub Actions Bot" &&  git config user.email "<>"   
+      - name: Update backend-shared
+        run: |          
+          cd backend &&  go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+          cd ../appstudio-controller && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+          cd ../utilities/db-migration && go get -u github.com/redhat-appstudio/managed-gitops/backend-shared
+          git status
+          git add . && git commit -m "update backend-shared" && git push origin develop
+      - name: Update db-migration
+        run: |
+          commit_id=$(git rev-parse HEAD)          
+          cd backend &&  go get github.com/redhat-appstudio/managed-gitops/utilities/db-migration@$commit
+          git add . && git commit -m "update db-migration" && git push origin develop
