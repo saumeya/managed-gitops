@@ -8,9 +8,10 @@ import (
 	"github.com/go-logr/logr"
 
 	managedgitopsv1alpha1 "github.com/redhat-appstudio/managed-gitops/backend-shared/apis/managed-gitops/v1alpha1"
-	db "github.com/redhat-appstudio/managed-gitops/backend-shared/config/db"
-	dbutil "github.com/redhat-appstudio/managed-gitops/backend-shared/config/db/util"
+	db "github.com/redhat-appstudio/managed-gitops/backend-shared/db"
+	dbutil "github.com/redhat-appstudio/managed-gitops/backend-shared/db/util"
 	sharedutil "github.com/redhat-appstudio/managed-gitops/backend-shared/util"
+	"github.com/redhat-appstudio/managed-gitops/backend-shared/util/gitopserrors"
 	"github.com/redhat-appstudio/managed-gitops/backend-shared/util/operations"
 	"github.com/redhat-appstudio/managed-gitops/backend/eventloop/eventlooptypes"
 	corev1 "k8s.io/api/core/v1"
@@ -26,6 +27,7 @@ import (
 const (
 	ConditionReasonSucceeded = "Succeeded"
 
+	ConditionReasonKubeError                        = "KubernetesError"
 	ConditionReasonDatabaseError                    = "DatabaseError"
 	ConditionReasonInvalidSecretType                = "InvalidSecretType"
 	ConditionReasonMissingKubeConfigField           = "MissingKubeConfigField"
@@ -79,10 +81,9 @@ func internalProcessMessage_ReconcileSharedManagedEnv(ctx context.Context, works
 	// of managedEnvironmentNew
 	if err := deleteManagedEnvironmentDBByAPINameAndNamespace(ctx, workspaceClient, managedEnvironmentCRName, managedEnvironmentCRNamespace,
 		string(managedEnvironmentCR.UID), workspaceNamespace, k8sClientFactory, dbQueries, *clusterUser, log); err != nil {
-		err2 := fmt.Errorf("unable to delete old managed environments by API name and namespace '%s' in '%s': %w",
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+		return SharedResourceManagedEnvContainer{}, fmt.Errorf("unable to delete old managed environments by API name and namespace '%s' in '%s': %w",
 			managedEnvironmentCRName, managedEnvironmentCRNamespace, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return SharedResourceManagedEnvContainer{}, err2
 	}
 
 	apiCRToDBMapping := db.APICRToDatabaseMapping{
@@ -94,9 +95,8 @@ func internalProcessMessage_ReconcileSharedManagedEnv(ctx context.Context, works
 	if err := dbQueries.GetDatabaseMappingForAPICR(ctx, &apiCRToDBMapping); err != nil {
 
 		if !db.IsResultNotFoundError(err) {
-			err2 := fmt.Errorf("unable to retrieve managed environment APICRToDatabaseMapping for %s: %w", apiCRToDBMapping.APIResourceUID, err)
-			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-			return newSharedResourceManagedEnvContainer(), err2
+			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+			return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to retrieve managed environment APICRToDatabaseMapping for %s: %w", apiCRToDBMapping.APIResourceUID, err)
 		}
 
 		// A) If there exists no APICRToDatabaseMapping for this Managed Environment resource, then just create a new managed environment
@@ -110,18 +110,16 @@ func internalProcessMessage_ReconcileSharedManagedEnv(ctx context.Context, works
 	if err := dbQueries.GetManagedEnvironmentById(ctx, managedEnv); err != nil {
 
 		if !db.IsResultNotFoundError(err) {
-			err2 := fmt.Errorf("unable to retrieve managed environment '%s", managedEnv.Managedenvironment_id)
-			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-			return newSharedResourceManagedEnvContainer(), err2
+			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+			return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to retrieve managed environment '%s", managedEnv.Managedenvironment_id)
 		}
 
 		// B) The APICRToDBMapping exists, but the managed env doesn't, so delete the mapping, then create the
 		//    managed environment/mapping from scratch.
 		rowsDeleted, err := dbQueries.DeleteAPICRToDatabaseMapping(ctx, &apiCRToDBMapping)
 		if err != nil {
-			err2 := fmt.Errorf("unable to delete APICRToDatabaseMapping for '%s'", apiCRToDBMapping.APIResourceUID)
-			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-			return newSharedResourceManagedEnvContainer(), err2
+			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+			return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to delete APICRToDatabaseMapping for '%s'", apiCRToDBMapping.APIResourceUID)
 		}
 		if rowsDeleted != 1 {
 			// Warn, but continue.
@@ -137,17 +135,15 @@ func internalProcessMessage_ReconcileSharedManagedEnv(ctx context.Context, works
 	if err := dbQueries.GetClusterCredentialsById(ctx, clusterCreds); err != nil {
 
 		if !db.IsResultNotFoundError(err) {
-			err2 := fmt.Errorf("unable to retrieve cluster credentials for '%s': %w", clusterCreds.Clustercredentials_cred_id, err)
-			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-			return newSharedResourceManagedEnvContainer(), err2
+			updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+			return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to retrieve cluster credentials for '%s': %w", clusterCreds.Clustercredentials_cred_id, err)
 		}
 
 		// Sanity test:
 		// Cluster credentials referenced by managed environment doesn't exist.
 		// However, this really shouldn't be possible, since there is a foreign key from managed environment to cluster credentials.
-		err2 := fmt.Errorf("SEVERE: managed environment referenced cluster credentials value which doens't exist: %w", err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return newSharedResourceManagedEnvContainer(), err2
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+		return newSharedResourceManagedEnvContainer(), fmt.Errorf("SEVERE: managed environment referenced cluster credentials value which doens't exist: %w", err)
 
 	}
 
@@ -172,13 +168,12 @@ func internalProcessMessage_ReconcileSharedManagedEnv(ctx context.Context, works
 
 	// E) We already have an existing managed env from the database, so get or create the remaining items for it
 
-	engineInstance, isNewEngineInstance, clusterAccess, isNewClusterAccess, engineCluster, err := wrapManagedEnv(ctx,
+	engineInstance, isNewEngineInstance, clusterAccess, isNewClusterAccess, engineCluster, uerr := wrapManagedEnv(ctx,
 		*managedEnv, workspaceNamespace, *clusterUser, gitopsEngineClient, dbQueries, log)
 
-	if err != nil {
-		err2 := fmt.Errorf("unable to wrap managed environment, on existing managed env, for %s: %w", apiCRToDBMapping.APIResourceUID, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return newSharedResourceManagedEnvContainer(), err2
+	if uerr != nil {
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, uerr.ConditionReason(), uerr.UserError(), log)
+		return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to wrap managed environment, on existing managed env, for %s: %w", apiCRToDBMapping.APIResourceUID, uerr.DevError())
 	}
 
 	// Ensure the managed environment CR has a connection status of "Succeeded"
@@ -336,7 +331,7 @@ func deleteManagedEnvironmentDBByAPINameAndNamespace(ctx context.Context, worksp
 			// If the managed environment can't be found, there is no other work to do, so just continue.
 		} else {
 			// 2b) Whether or not the managed environment DB row exists, clean up all related database entries
-			if err := deleteManagedEnvironmentResources(ctx, managedEnv.Managedenvironment_id, managedEnv, user, k8sClientFactory, dbQueries, log); err != nil {
+			if err := DeleteManagedEnvironmentResources(ctx, managedEnv.Managedenvironment_id, managedEnv, user, k8sClientFactory, dbQueries, log); err != nil {
 				return fmt.Errorf("unable to delete managed environment row '%s': %v", managedEnv.Managedenvironment_id, err)
 			}
 		}
@@ -381,9 +376,8 @@ func replaceExistingManagedEnv(ctx context.Context,
 	if err := dbQueries.UpdateManagedEnvironment(ctx, &managedEnvironmentDB); err != nil {
 		log.Error(err, "Unable to update ManagedEnvironment with new cluster credentials ID", managedEnvironmentDB.GetAsLogKeyValues()...)
 
-		err2 := fmt.Errorf("unable to update managed environment with new credentials: %w", err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return SharedResourceManagedEnvContainer{}, err2
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+		return SharedResourceManagedEnvContainer{}, fmt.Errorf("unable to update managed environment with new credentials: %w", err)
 	}
 	log.Info("Updated ManagedEnvironment with new cluster credentials ID", managedEnvironmentDB.GetAsLogKeyValues()...)
 
@@ -391,28 +385,25 @@ func replaceExistingManagedEnv(ctx context.Context,
 	rowsDeleted, err := dbQueries.DeleteClusterCredentialsById(ctx, oldClusterCredentialsPrimaryKey)
 	if err != nil {
 		log.Error(err, "Unable to delete old ClusterCredentials row which is no longer used by ManagedEnv", "clusterCredentials", oldClusterCredentialsPrimaryKey)
-		err2 := fmt.Errorf("unable to delete old cluster credentials '%s': %w", oldClusterCredentialsPrimaryKey, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return SharedResourceManagedEnvContainer{}, err2
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+		return SharedResourceManagedEnvContainer{}, fmt.Errorf("unable to delete old cluster credentials '%s': %w", oldClusterCredentialsPrimaryKey, err)
 	}
 	if rowsDeleted != 1 {
-		msg := "unexpected number of rows deleted when deleting cluster credentials"
-		log.V(sharedutil.LogLevel_Warn).Info(msg,
+		log.V(sharedutil.LogLevel_Warn).Info("unexpected number of rows deleted when deleting cluster credentials",
 			"clusterCredentialsID", oldClusterCredentialsPrimaryKey)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, msg, log)
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
 		return SharedResourceManagedEnvContainer{}, nil
 	}
 	log.Info("Deleted old ClusterCredentials row which is no longer used by ManagedEnv", "clusterCredentials", oldClusterCredentialsPrimaryKey)
 
 	// 4) Retrieve/create the other env vars for the managed env, and return
 	engineInstance, isNewEngineInstance, clusterAccess,
-		isNewClusterAccess, engineCluster, err := wrapManagedEnv(ctx,
+		isNewClusterAccess, engineCluster, uerr := wrapManagedEnv(ctx,
 		managedEnvironmentDB, workspaceNamespace, clusterUser, gitopsEngineClient, dbQueries, log)
 
-	if err != nil {
-		err2 := fmt.Errorf("unable to wrap managed environment for %s: %w", managedEnvironmentCR.UID, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return newSharedResourceManagedEnvContainer(), err2
+	if uerr != nil {
+		updateManagedEnvironmentConnectionStatus(&managedEnvironmentCR, ctx, workspaceClient, metav1.ConditionUnknown, uerr.ConditionReason(), uerr.UserError(), log)
+		return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to wrap managed environment for %s: %w", managedEnvironmentCR.UID, uerr.DevError())
 	}
 
 	res := SharedResourceManagedEnvContainer{
@@ -450,13 +441,12 @@ func constructNewManagedEnv(ctx context.Context,
 	}
 
 	engineInstance, isNewEngineInstance, clusterAccess,
-		isNewClusterAccess, engineCluster, err := wrapManagedEnv(ctx,
+		isNewClusterAccess, engineCluster, uerr := wrapManagedEnv(ctx,
 		*managedEnvDB, workspaceNamespace, clusterUser, gitopsEngineClient, dbQueries, log)
 
-	if err != nil {
-		err2 := fmt.Errorf("unable to wrap managed environment for %s: %w", managedEnvironment.UID, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return newSharedResourceManagedEnvContainer(), err2
+	if uerr != nil {
+		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, uerr.ConditionReason(), uerr.UserError(), log)
+		return newSharedResourceManagedEnvContainer(), fmt.Errorf("unable to wrap managed environment for %s: %w", managedEnvironment.UID, uerr.DevError())
 	}
 
 	res := SharedResourceManagedEnvContainer{
@@ -477,13 +467,13 @@ func constructNewManagedEnv(ctx context.Context,
 // wrapManagedEnv creates (or gets) a GitOpsEngineInstance, GitOpsEngineCluster, and ClusterAccess, for the provided 'managedEnv' param
 func wrapManagedEnv(ctx context.Context, managedEnv db.ManagedEnvironment, workspaceNamespace corev1.Namespace,
 	clusterUser db.ClusterUser, gitopsEngineClient client.Client, dbQueries db.DatabaseQueries, log logr.Logger) (*db.GitopsEngineInstance,
-	bool, *db.ClusterAccess, bool, *db.GitopsEngineCluster, error) {
+	bool, *db.ClusterAccess, bool, *db.GitopsEngineCluster, gitopserrors.ConditionError) {
 
 	engineInstance, isNewInstance, gitopsEngineCluster, err :=
 		internalDetermineGitOpsEngineInstanceForNewApplication(ctx, clusterUser, managedEnv, gitopsEngineClient, dbQueries, log)
 
 	if err != nil {
-		log.Error(err, "unable to determine gitops engine instance")
+		log.Error(err.DevError(), "unable to determine gitops engine instance")
 		return nil, false, nil, false, nil, err
 	}
 
@@ -494,10 +484,11 @@ func wrapManagedEnv(ctx context.Context, managedEnv db.ManagedEnvironment, works
 		Clusteraccess_gitops_engine_instance_id: engineInstance.Gitopsengineinstance_id,
 	}
 
-	err, isNewClusterAccess := internalGetOrCreateClusterAccess(ctx, &ca, dbQueries, log)
-	if err != nil {
-		log.Error(err, "unable to create cluster access")
-		return nil, false, nil, false, nil, err
+	err1, isNewClusterAccess := internalGetOrCreateClusterAccess(ctx, &ca, dbQueries, log)
+	if err1 != nil {
+		log.Error(err1, "unable to create cluster access")
+		msg := gitopserrors.UnknownError
+		return nil, false, nil, false, nil, gitopserrors.NewUserConditionError(msg, err1, ConditionReasonDatabaseError)
 	}
 
 	return engineInstance,
@@ -525,9 +516,8 @@ func createNewManagedEnv(ctx context.Context, managedEnvironment managedgitopsv1
 
 	if err := dbQueries.CreateManagedEnvironment(ctx, managedEnv); err != nil {
 		log.Error(err, "Unable to create new ManagedEnvironment", managedEnv.GetAsLogKeyValues()...)
-		err2 := fmt.Errorf("unable to create managed environment for env obj '%s': %w", managedEnvironment.UID, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
-		return nil, err2
+		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
+		return nil, fmt.Errorf("unable to create managed environment for env obj '%s': %w", managedEnvironment.UID, err)
 	}
 	log.Info("Created new ManagedEnvironment", managedEnv.GetAsLogKeyValues()...)
 
@@ -542,8 +532,8 @@ func createNewManagedEnv(ctx context.Context, managedEnvironment managedgitopsv1
 	}
 	if err := dbQueries.CreateAPICRToDatabaseMapping(ctx, apiCRToDBMapping); err != nil {
 		log.Error(err, "Unable to create new APICRToDatabaseMapping", apiCRToDBMapping.GetAsLogKeyValues()...)
+		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, gitopserrors.UnknownError, log)
 		err2 := fmt.Errorf("unable to create APICRToDatabaseMapping for managed environment: %w", err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionUnknown, ConditionReasonDatabaseError, err2.Error(), log)
 		return nil, err2
 	}
 	log.Info("Created new APICRToDatabaseMapping", apiCRToDBMapping.GetAsLogKeyValues()...)
@@ -551,15 +541,17 @@ func createNewManagedEnv(ctx context.Context, managedEnvironment managedgitopsv1
 	return managedEnv, nil
 }
 
-func deleteManagedEnvironmentResources(ctx context.Context, managedEnvID string, managedEnvCR *db.ManagedEnvironment, user db.ClusterUser,
+func DeleteManagedEnvironmentResources(ctx context.Context, managedEnvID string, managedEnvCR *db.ManagedEnvironment, user db.ClusterUser,
 	k8sClientFactory SRLK8sClientFactory, dbQueries db.DatabaseQueries, log logr.Logger) error {
 
 	log = log.WithValues("managedEnvID", managedEnvID)
 
 	// 1) Retrieve all the Applications that reference this ManagedEnvironment
 	applications := []db.Application{}
-	if _, err := dbQueries.ListApplicationsForManagedEnvironment(ctx, managedEnvID, &applications); err != nil {
-		return fmt.Errorf("unable to list applicatiosn for managed environment '%s': %v", managedEnvID, err)
+
+	log.Info("niling the values of Application rows that reference deleted ManagedEnvironment")
+	if _, err := dbQueries.RemoveManagedEnvironmentFromAllApplications(ctx, managedEnvID, &applications); err != nil {
+		return fmt.Errorf("unable to list applications for managed environment '%s': %v", managedEnvID, err)
 	}
 
 	// gitopsEngineInstances is a hash set of all the gitops engine instances that referenced the managed environment
@@ -571,14 +563,6 @@ func deleteManagedEnvironmentResources(ctx context.Context, managedEnvID string,
 		app := applications[idx]
 
 		log := log.WithValues("applicationID", app.Application_id)
-
-		// Nil the managed environment field of the Application (since we are deleting the managed environment itself, and we have a foreign key here)
-		app.Managed_environment_id = ""
-		if err := dbQueries.UpdateApplication(ctx, &app); err != nil {
-			log.Error(err, "Unable to update Application row: nil-ing the managed environment field of Application that uses deleted managed environment")
-			return fmt.Errorf("unable to nil managed environment of applicaton '%s': %v", app.Application_id, err)
-		}
-		log.Info("Updated Application row: nil-ing the managed environment field of Application that uses deleted managed environment")
 
 		gitopsEngineInstance := &db.GitopsEngineInstance{
 			Gitopsengineinstance_id: app.Engine_instance_inst_id,
@@ -764,14 +748,14 @@ func createNewClusterCredentials(ctx context.Context, managedEnvironment managed
 
 	restConfig, err := clientConfig.ClientConfig()
 	if err != nil {
-		err2 := fmt.Errorf("unable to retrive restConfig from managed env secret: %w", err)
+		err2 := fmt.Errorf("unable to retrive restConfig from managed environment secret: %w", err)
 		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionFalse, ConditionReasonUnableToRetrieveRestConfig, err2.Error(), log)
 		return db.ClusterCredentials{}, err2
 	}
 
 	k8sClient, err := k8sClientFactory.BuildK8sClient(restConfig)
 	if err != nil {
-		err2 := fmt.Errorf("unable to create k8s client from RESTConfig: %w", err)
+		err2 := fmt.Errorf("unable to create k8s client from restConfig from managed environment secret: %w", err)
 		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionFalse, ConditionReasonUnableToCreateClient, err2.Error(), log)
 		return db.ClusterCredentials{}, err2
 	}
@@ -796,9 +780,8 @@ func createNewClusterCredentials(ctx context.Context, managedEnvironment managed
 
 	if err := dbQueries.CreateClusterCredentials(ctx, &clusterCredentials); err != nil {
 		log.Error(err, "Unable to create ClusterCredentials for ManagedEnvironment", clusterCredentials.GetAsLogKeyValues()...)
-		err2 := fmt.Errorf("unable to create cluster credentials for host '%s': %w", clusterCredentials.Host, err)
-		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionFalse, ConditionReasonUnableToCreateClusterCredentials, err2.Error(), log)
-		return db.ClusterCredentials{}, err2
+		updateManagedEnvironmentConnectionStatus(&managedEnvironment, ctx, workspaceClient, metav1.ConditionFalse, ConditionReasonUnableToCreateClusterCredentials, gitopserrors.UnknownError, log)
+		return db.ClusterCredentials{}, fmt.Errorf("unable to create cluster credentials for host '%s': %w", clusterCredentials.Host, err)
 	}
 	log.Info("Created ClusterCredentials for ManagedEnvironment", clusterCredentials.GetAsLogKeyValues()...)
 

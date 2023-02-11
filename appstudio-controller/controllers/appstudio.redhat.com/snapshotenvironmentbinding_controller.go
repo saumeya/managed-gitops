@@ -28,6 +28,7 @@ import (
 	appstudioshared "github.com/redhat-appstudio/application-api/api/v1alpha1"
 	apibackend "github.com/redhat-appstudio/managed-gitops/backend-shared/apis/managed-gitops/v1alpha1"
 	sharedutil "github.com/redhat-appstudio/managed-gitops/backend-shared/util"
+	corev1 "k8s.io/api/core/v1"
 	apierr "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -42,11 +43,6 @@ import (
 const (
 	// If the 'appstudioLabelKey' string is present in a label of the SnapshotEnvironmentBinding, that label is copied to child GitOpsDeployments of the SnapshotEnvironmentBinding
 	appstudioLabelKey = "appstudio.openshift.io"
-
-	ComponentDeploymentConditionAllComponentsDeployed = "AllComponentsDeployed"
-	ComponentDeploymentConditionCommitsSynced         = "CommitsSynced"
-	ComponentDeploymentConditionCommitsUnsynced       = "CommitsUnsynced"
-	ComponentDeploymentConditionErrorOccurred         = "ErrorOccurred"
 )
 
 // SnapshotEnvironmentBindingReconciler reconciles a SnapshotEnvironmentBinding object
@@ -64,6 +60,7 @@ type SnapshotEnvironmentBindingReconciler struct {
 //+kubebuilder:rbac:groups=appstudio.redhat.com,resources=snapshotenvironmentbindings/finalizers,verbs=update
 //+kubebuilder:rbac:groups=appstudio.redhat.com,resources=environments,verbs=get;list;watch;
 //+kubebuilder:rbac:groups=managed-gitops.redhat.com,resources=gitopsdeployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=namespaces,verbs=get;list;watch;
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -79,6 +76,12 @@ func (r *SnapshotEnvironmentBindingReconciler) Reconcile(ctx context.Context, re
 	binding := &appstudioshared.SnapshotEnvironmentBinding{}
 
 	rClient := sharedutil.IfEnabledSimulateUnreliableClient(r.Client)
+
+	// If the Namespace is in the process of being deleted, don't handle any additional requests.
+	if isNamespaceBeingDeleted, err := isRequestNamespaceBeingDeleted(ctx, req.Namespace,
+		rClient, log); isNamespaceBeingDeleted || err != nil {
+		return ctrl.Result{}, err
+	}
 
 	if err := rClient.Get(ctx, req.NamespacedName, binding); err != nil {
 		// Binding doesn't exist: it was deleted.
@@ -225,12 +228,12 @@ func addComponentDeploymentCondition(ctx context.Context, binding *appstudioshar
 		}
 	}
 
-	ctype := ComponentDeploymentConditionAllComponentsDeployed
+	ctype := appstudioshared.ComponentDeploymentConditionAllComponentsDeployed
 	status := metav1.ConditionFalse
-	reason := ComponentDeploymentConditionCommitsUnsynced
+	reason := appstudioshared.ComponentDeploymentConditionCommitsUnsynced
 	if synced == total {
 		status = metav1.ConditionTrue
-		reason = ComponentDeploymentConditionCommitsSynced
+		reason = appstudioshared.ComponentDeploymentConditionCommitsSynced
 	}
 	message := fmt.Sprintf("%d of %d components deployed", synced, total)
 
@@ -477,4 +480,23 @@ func removeAppStudioLabelsFromMap(m map[string]string) {
 			delete(m, key)
 		}
 	}
+}
+
+// isRequestNamespaceBeingDeleted returns true if the Namespace of the resource is being deleted, false otherwise.
+func isRequestNamespaceBeingDeleted(ctx context.Context, namespaceName string, k8sClient client.Client, log logr.Logger) (bool, error) {
+	namespace := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: namespaceName}}
+	if err := k8sClient.Get(ctx, client.ObjectKeyFromObject(namespace), namespace); err != nil {
+		if apierr.IsNotFound(err) {
+			return false, nil
+		}
+		log.Error(err, "Unexpected error occurred on retrieving Namespace")
+		return false, err
+
+	} else if namespace.DeletionTimestamp != nil {
+		log.Info("Ignoring request to Namespace that is being deleted (has non-nil deletionTimestamp)")
+		return true, nil
+	}
+
+	return false, nil
+
 }

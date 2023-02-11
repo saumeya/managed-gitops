@@ -62,6 +62,7 @@ const (
 //+kubebuilder:rbac:groups=appstudio.redhat.com,resources=snapshotenvironmentbindings,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=appstudio.redhat.com,resources=snapshotenvironmentbindings/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=appstudio.redhat.com,resources=snapshotenvironmentbindings/finalizers,verbs=update
+//+kubebuilder:rbac:groups=core,resources=namespaces,verbs=get;list;watch;
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -77,6 +78,12 @@ func (r *PromotionRunReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	promotionRun := &appstudioshared.PromotionRun{}
 
 	rClient := sharedutil.IfEnabledSimulateUnreliableClient(r.Client)
+
+	// If the Namespace is in the process of being deleted, don't handle any additional requests.
+	if isNamespaceBeingDeleted, err := isRequestNamespaceBeingDeleted(ctx, req.Namespace,
+		rClient, log); isNamespaceBeingDeleted || err != nil {
+		return ctrl.Result{}, err
+	}
 
 	if err := rClient.Get(ctx, req.NamespacedName, promotionRun); err != nil {
 		if apierr.IsNotFound(err) {

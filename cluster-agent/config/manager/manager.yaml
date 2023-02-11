@@ -29,9 +29,12 @@ spec:
         - gitops-service-cluster-agent
         args:
         - --health-probe-bind-address=:8083
-        - --metrics-bind-address=127.0.0.1:8082
+        - --metrics-bind-address=:8080
         - --leader-elect
         - --zap-time-encoding=rfc3339nano
+        ports:
+          - containerPort: 8080
+            name: http-metrics
         env:
         - name: ARGO_CD_NAMESPACE
           value: gitops-service-argocd
@@ -43,28 +46,34 @@ spec:
               key: postgresql-password
               name: gitops-postgresql-staging
         image: ${COMMON_IMAGE}
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true          
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8083
-          initialDelaySeconds: 15
+          initialDelaySeconds: 25
           periodSeconds: 20
         name: manager
         readinessProbe:
           httpGet:
             path: /readyz
             port: 8083
-          initialDelaySeconds: 5
+          initialDelaySeconds: 25
           periodSeconds: 10
         resources:
           limits:
             cpu: 300m
-            memory: 200Mi
+            memory: 1000Mi
           requests:
             cpu: 200m
-            memory: 50Mi
+            memory: 200Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+      - emptyDir: {}
+        name: tmp

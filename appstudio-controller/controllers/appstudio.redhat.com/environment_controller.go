@@ -47,6 +47,7 @@ type EnvironmentReconciler struct {
 //+kubebuilder:rbac:groups=managed-gitops.redhat.com,resources=gitopsdeploymentmanagedenvironments,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch
 //+kubebuilder:rbac:groups=managed-gitops.redhat.com,resources=gitopsdeploymentmanagedenvironments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=namespaces,verbs=get;list;watch;
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -58,6 +59,12 @@ func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	log := log.FromContext(ctx).WithValues("request", req)
 
 	rClient := sharedutil.IfEnabledSimulateUnreliableClient(r.Client)
+
+	// If the Namespace is in the process of being deleted, don't handle any additional requests.
+	if isNamespaceBeingDeleted, err := isRequestNamespaceBeingDeleted(ctx, req.Namespace,
+		rClient, log); isNamespaceBeingDeleted || err != nil {
+		return ctrl.Result{}, err
+	}
 
 	// The goal of this function is to ensure that if an Environment exists, and that Environment
 	// has the 'kubernetesCredentials' field defined, that a corresponding
@@ -212,8 +219,9 @@ func generateDesiredResource(ctx context.Context, env appstudioshared.Environmen
 		},
 	}
 	managedEnv.Spec = managedgitopsv1alpha1.GitOpsDeploymentManagedEnvironmentSpec{
-		APIURL:                   env.Spec.UnstableConfigurationFields.KubernetesClusterCredentials.APIURL,
-		ClusterCredentialsSecret: secret.Name,
+		APIURL:                     env.Spec.UnstableConfigurationFields.KubernetesClusterCredentials.APIURL,
+		ClusterCredentialsSecret:   secret.Name,
+		AllowInsecureSkipTLSVerify: env.Spec.UnstableConfigurationFields.KubernetesClusterCredentials.AllowInsecureSkipTLSVerify,
 	}
 
 	return &managedEnv, nil

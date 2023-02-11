@@ -45,11 +45,12 @@ import (
 	sharedutil "github.com/redhat-appstudio/managed-gitops/backend-shared/util"
 
 	managedgitopsv1alpha1 "github.com/redhat-appstudio/managed-gitops/backend-shared/apis/managed-gitops/v1alpha1"
-	"github.com/redhat-appstudio/managed-gitops/backend-shared/config/db"
-	dbutil "github.com/redhat-appstudio/managed-gitops/backend-shared/config/db/util"
+	"github.com/redhat-appstudio/managed-gitops/backend-shared/db"
+	dbutil "github.com/redhat-appstudio/managed-gitops/backend-shared/db/util"
 	managedgitopscontrollers "github.com/redhat-appstudio/managed-gitops/backend/controllers/managed-gitops"
 	"github.com/redhat-appstudio/managed-gitops/backend/eventloop"
 	"github.com/redhat-appstudio/managed-gitops/backend/eventloop/preprocess_event_loop"
+	"github.com/redhat-appstudio/managed-gitops/backend/eventloop/shared_resource_loop"
 	"github.com/redhat-appstudio/managed-gitops/backend/routes"
 	//+kubebuilder:scaffold:imports
 )
@@ -159,6 +160,15 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "GitOpsDeploymentManagedEnvironment")
 		os.Exit(1)
 	}
+	if err = (&managedgitopscontrollers.SecretReconciler{
+		Client:                       mgr.GetClient(),
+		Scheme:                       mgr.GetScheme(),
+		PreprocessEventLoopProcessor: managedgitopscontrollers.NewDefaultPreProcessEventLoopProcessor(preprocessEventLoop),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "GitOpsDeploymentManagedEnvironment")
+		os.Exit(1)
+	}
+
 	//+kubebuilder:scaffold:builder
 
 	startDBReconciler(mgr)
@@ -193,8 +203,9 @@ func startDBReconciler(mgr ctrl.Manager) {
 	}
 
 	databaseReconciler := eventloop.DatabaseReconciler{
-		DB:     dbQueries,
-		Client: mgr.GetClient(),
+		DB:               dbQueries,
+		Client:           mgr.GetClient(),
+		K8sClientFactory: shared_resource_loop.DefaultK8sClientFactory{},
 	}
 
 	// Start goroutine for database reconciler

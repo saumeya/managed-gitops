@@ -38,7 +38,6 @@ var _ = Describe("SnapshotEnvironmentBinding Reconciler E2E tests", func() {
 					Namespace: fixture.GitOpsServiceE2ENamespace,
 				},
 				Spec: appstudiosharedv1.EnvironmentSpec{
-					Type:               appstudiosharedv1.EnvironmentType_POC,
 					DisplayName:        "my-environment",
 					DeploymentStrategy: appstudiosharedv1.DeploymentStrategy_AppStudioAutomated,
 					ParentEnvironment:  "",
@@ -148,9 +147,9 @@ var _ = Describe("SnapshotEnvironmentBinding Reconciler E2E tests", func() {
 			By("checking the status component deployment condition is true")
 			Eventually(binding, "3m", "1s").Should(bindingFixture.HaveComponentDeploymentCondition(
 				metav1.Condition{
-					Type:    appstudiocontroller.ComponentDeploymentConditionAllComponentsDeployed,
+					Type:    appstudiosharedv1.ComponentDeploymentConditionAllComponentsDeployed,
 					Status:  metav1.ConditionTrue,
-					Reason:  appstudiocontroller.ComponentDeploymentConditionCommitsSynced,
+					Reason:  appstudiosharedv1.ComponentDeploymentConditionCommitsSynced,
 					Message: "2 of 2 components deployed",
 				}))
 
@@ -164,16 +163,16 @@ var _ = Describe("SnapshotEnvironmentBinding Reconciler E2E tests", func() {
 			By("checking the status component deployment condition is false")
 			Eventually(binding, "3m", "1s").Should(bindingFixture.HaveComponentDeploymentCondition(
 				metav1.Condition{
-					Type:    appstudiocontroller.ComponentDeploymentConditionAllComponentsDeployed,
+					Type:    appstudiosharedv1.ComponentDeploymentConditionAllComponentsDeployed,
 					Status:  metav1.ConditionFalse,
-					Reason:  appstudiocontroller.ComponentDeploymentConditionCommitsUnsynced,
+					Reason:  appstudiosharedv1.ComponentDeploymentConditionCommitsUnsynced,
 					Message: "1 of 2 components deployed",
 				}))
 			Consistently(binding, "1m", "1s").Should(bindingFixture.HaveComponentDeploymentCondition(
 				metav1.Condition{
-					Type:    appstudiocontroller.ComponentDeploymentConditionAllComponentsDeployed,
+					Type:    appstudiosharedv1.ComponentDeploymentConditionAllComponentsDeployed,
 					Status:  metav1.ConditionFalse,
-					Reason:  appstudiocontroller.ComponentDeploymentConditionCommitsUnsynced,
+					Reason:  appstudiosharedv1.ComponentDeploymentConditionCommitsUnsynced,
 					Message: "1 of 2 components deployed",
 				}))
 
@@ -187,9 +186,9 @@ var _ = Describe("SnapshotEnvironmentBinding Reconciler E2E tests", func() {
 			By("checking the status component deployment condition is true")
 			Eventually(binding, "3m", "1s").Should(bindingFixture.HaveComponentDeploymentCondition(
 				metav1.Condition{
-					Type:    appstudiocontroller.ComponentDeploymentConditionAllComponentsDeployed,
+					Type:    appstudiosharedv1.ComponentDeploymentConditionAllComponentsDeployed,
 					Status:  metav1.ConditionTrue,
-					Reason:  appstudiocontroller.ComponentDeploymentConditionCommitsSynced,
+					Reason:  appstudiosharedv1.ComponentDeploymentConditionCommitsSynced,
 					Message: "2 of 2 components deployed",
 				}))
 		})
@@ -414,13 +413,11 @@ var _ = Describe("SnapshotEnvironmentBinding Reconciler E2E tests", func() {
 
 			// Check no GitOpsDeployment CR found with default name (longer name).
 			gitOpsDeployment := buildGitOpsDeploymentObjectMeta(gitOpsDeploymentName, binding.Namespace)
-			err = k8s.Get(&gitOpsDeployment, k8sClient)
-			Expect(apierr.IsNotFound(err)).To(BeTrue())
+			Consistently(&gitOpsDeployment, "30s", "1s").ShouldNot(k8s.ExistByName(k8sClient), "wait 30s for the object not to exist")
 
-			// Check GitOpsDeployment is created with short name).
+			// Check GitOpsDeployment is created with short name.
 			gitOpsDeployment.Name = binding.Name + "-" + binding.Spec.Components[0].Name
-			err = k8s.Get(&gitOpsDeployment, k8sClient)
-			Expect(err).To(Succeed())
+			Eventually(&gitOpsDeployment, "2m", "1s").Should(k8s.ExistByName(k8sClient))
 
 			// Check GitOpsDeployment is having repository data as given in Binding.
 			Eventually(gitOpsDeployment, "2m", "1s").Should(gitopsDeplFixture.HaveSpecSource(managedgitopsv1alpha1.ApplicationSource{
